@@ -5,6 +5,10 @@
 # date: 2019-11-27
 # quick sort and find the k largest number
 
+import time
+import random
+
+
 
 a = [8,9,6,3,5,1,2,4,7,11,10]
 
@@ -13,10 +17,8 @@ a = [8,9,6,3,5,1,2,4,7,11,10]
 def quick_sort(a,p,r):
     if p >= r:
         return
-
    # 分区
     q = partion(a,p,r)
-
     # 左分区
     quick_sort(a,p,q-1)
     # 右分区
@@ -24,37 +26,24 @@ def quick_sort(a,p,r):
 
 # 分区及交换
 def partion(a,l,r):
-    # 取第一个元素做为基准值
-    temp = a[l]
-    i = r
-    j = l
+    
+    # 默认取第一个元素
+    guard = a[l]
+    
 
-    # 判断左右2个哨兵的值
-    # 如果有左边哨兵值大于基准值并且右边哨兵值小于基准值则交换，然后左边哨兵前进，右边哨兵后退，直到2者相遇
-    while j < i:
-        if  a[j] > temp:
-            while i > j:
-                if a[i] <= temp:
-                    s = a[i]
-                    a[i] = a[j]
-                    a[j] = s
-                    i = i-1
-                    break
-                i = i-1
-        j = j + 1
-
-    # 判断右哨兵节点是否比基准值大，如果大，那么交换基准值与右边哨兵前一个元素（哨兵前一个元素一定不大于基准值)
-    # 反之则交换基准值与左哨兵值
-    if a[i] > temp:
-        a[l] = a[i-1]
-        a[i-1] = temp
-        print(a)
-        return i - 1
-    else:
-        a[l] = a[j]
-        a[j] = temp
-        print a
-        return j
+    # 当左边游标小于右边游标时
+    while l < r:
+        # 从右边找到一个小于guard的下标，并放置到左边游标的位置(首次操作占据guard值的下标)
+        while l < r and a[r] >= guard:
+            r = r - 1
+        a[l] = a[r]
+        # 从左边找一个大于guard的下标，然后存放到右边游标的位置
+        while l < r and a[l] < guard:
+            l = l + 1 
+        a[r] = a[l]
+    # 循环结束后2个游标相遇，此时的下标即为下次递归的分界点
+    a[l] = guard
+    return l 
 
 
 
@@ -72,56 +61,38 @@ def find_K(a,p,r,k):
         # print  p
         # print "enda"
         return 
+    q = partion(a,p,r)
 
-    q = partion_k(a,p,r,k)
-
-    if q == k:
+    if q == k-1:
         return 
-    if q > k :
-        find_K(a,p,q-1,k)
-    if q < k:
-        find_K(a,q+1,r,k)
+    if q > k-1 :
+        find_K(a,p,q-1,k-1)
+    if q < k-1:
+        find_K(a,q+1,r,k-1)
 
-
-def partion_k(a,l,r,k):
-    # 取第k元素做为基准值
-    temp = a[l]
-    i = r
-    j = l
-
-    # 判断左右2个哨兵的值
-    # 如果有左边哨兵值大于基准值并且右边哨兵值小于基准值则交换，然后左边哨兵前进，右边哨兵后退，直到2者相遇
-    while j < i:
-        if  a[j] > temp:
-            while i > j:
-                if a[i] <= temp:
-                    s = a[i]
-                    a[i] = a[j]
-                    a[j] = s
-                    i = i-1
-                    break
-                i = i-1
-        j = j + 1
-    if a[i] > temp:
-        a[l] = a[i-1]
-        a[i-1] = temp
-        return i - 1
-    else:
-        a[l] = a[j]
-        a[j] = temp
-        return j
-
-
-
-
-
-if __name__ == "__main__":
-    #quick_sort(a,0,len(a)-1)
-    print(a)
-    find_K(a,0,len(a)-1,10)
-    print(a[10])
+if __name__ == "__main__":    
+    i =j= 0
+    random_arr = []
+    random_arr2 = []#[9,8,7,6,5,3,4,2,1,0]
+    while i<10000:
+         random_arr.append(random.randint(0,10000))
+         i = i +1 
+    while j < 10:
+        random_arr2.append(random.randint(0,100))
+        j = j +1 
+    start  = time.time()
+    quick_sort(random_arr,0,9999)
+    print (time.time() - start)*1000
+   
     
-
-
-
-
+    print "xxx"
+    print(len(random_arr2))
+    start  = time.time()
+    r = random.randint(0,9)
+ 
+    find_K(random_arr2,0,9,7)
+    print (time.time() - start)*1000
+    print r,"\n",random_arr2
+ 
+    quick_sort(random_arr2,0,9)
+    print random_arr2
